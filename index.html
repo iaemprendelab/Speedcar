@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Speed Car</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="game-container">
+    <canvas id="gameCanvas" width="480" height="720"></canvas>
+
+    <div id="hud">
+      <div id="score">Puntos: 0</div>
+      <div id="best">Mejor: 0</div>
+      <div id="speed">Velocidad: 1.0x</div>
+    </div>
+
+    <div id="start-screen" class="overlay">
+      <h1>🏎️ Speed Car</h1>
+      <p>Esquiva los autos y sobrevive el mayor tiempo posible.</p>
+      <p class="controls">
+        Usa <strong>← →</strong> o <strong>A / D</strong> para moverte.<br>
+        En móvil: toca los lados izquierdo/derecho de la pantalla.
+      </p>
+      <button id="startBtn">Iniciar juego</button>
+    </div>
+
+    <div id="game-over-screen" class="overlay hidden">
+      <h1>💥 ¡Choque!</h1>
+      <p id="finalScore">Puntos: 0</p>
+      <p id="newBestMsg" class="hidden">¡Nuevo récord!</p>
+      <button id="restartBtn">Reintentar</button>
+    </div>
+
+    <div id="touch-controls">
+      <div id="touch-left" class="touch-zone">◀</div>
+      <div id="touch-right" class="touch-zone">▶</div>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
