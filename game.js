@@ -16,6 +16,7 @@
   const scoreEl = document.getElementById("score");
   const bestEl = document.getElementById("best");
   const speedEl = document.getElementById("speed");
+  const levelEl = document.getElementById("level");
   const startScreen = document.getElementById("start-screen");
   const gameOverScreen = document.getElementById("game-over-screen");
   const finalScoreEl = document.getElementById("finalScore");
@@ -26,6 +27,29 @@
   const touchRight = document.getElementById("touch-right");
 
   const BEST_KEY = "speedcar_best_score";
+
+  const LEVELS = [
+    { score: 0, speed: 4.2, spawnInterval: 75 },
+    { score: 8, speed: 5.4, spawnInterval: 64 },
+    { score: 18, speed: 6.6, spawnInterval: 55 },
+    { score: 32, speed: 8.0, spawnInterval: 47 },
+    { score: 50, speed: 9.4, spawnInterval: 40 },
+    { score: 72, speed: 10.8, spawnInterval: 34 },
+    { score: 98, speed: 12.2, spawnInterval: 29 },
+    { score: 130, speed: 13.6, spawnInterval: 25 },
+    { score: 168, speed: 15.0, spawnInterval: 22 },
+    { score: 212, speed: 16.4, spawnInterval: 19 },
+  ];
+  const MAX_SPEED = 18;
+
+  function levelIndexForScore(currentScore) {
+    let index = 0;
+    for (let i = 0; i < LEVELS.length; i++) {
+      if (currentScore >= LEVELS[i].score) index = i;
+      else break;
+    }
+    return index;
+  }
 
   function laneX(lane) {
     return ROAD_LEFT + LANE_WIDTH * lane + LANE_WIDTH / 2;
@@ -50,12 +74,13 @@
   let gameOver = false;
   let score = 0;
   let best = Number(localStorage.getItem(BEST_KEY)) || 0;
-  let baseSpeed = 4.2;
-  let speed = baseSpeed;
+  let speed = LEVELS[0].speed;
   let spawnTimer = 0;
-  let spawnInterval = 75;
+  let spawnInterval = LEVELS[0].spawnInterval;
   let elapsedFrames = 0;
   let shakeTime = 0;
+  let levelIndex = 0;
+  let levelFlashTime = 0;
 
   bestEl.textContent = "Mejor: " + best;
 
@@ -66,12 +91,13 @@
     player.x = laneX(1);
     player.targetX = laneX(1);
     score = 0;
-    baseSpeed = 4.2;
-    speed = baseSpeed;
+    speed = LEVELS[0].speed;
     spawnTimer = 0;
-    spawnInterval = 75;
+    spawnInterval = LEVELS[0].spawnInterval;
     elapsedFrames = 0;
     shakeTime = 0;
+    levelIndex = 0;
+    levelFlashTime = 0;
     gameOver = false;
   }
 
@@ -155,10 +181,20 @@
       // smooth lane movement
       player.x += (player.targetX - player.x) * 0.22;
 
-      // difficulty ramps with score
-      baseSpeed = 4.2 + score * 0.02;
-      speed = Math.min(baseSpeed, 14);
-      spawnInterval = Math.max(28, 75 - score * 0.4);
+      // difficulty ramps in discrete levels based on score
+      const newLevelIndex = levelIndexForScore(score);
+      if (newLevelIndex > levelIndex) {
+        levelIndex = newLevelIndex;
+        levelFlashTime = 90;
+      }
+      const level = LEVELS[levelIndex];
+      const beyondLastLevel = levelIndex === LEVELS.length - 1;
+      speed = beyondLastLevel
+        ? Math.min(level.speed + (score - level.score) * 0.03, MAX_SPEED)
+        : level.speed;
+      spawnInterval = beyondLastLevel
+        ? Math.max(14, level.spawnInterval - (score - level.score) * 0.05)
+        : level.spawnInterval;
 
       // spawn obstacles
       spawnTimer++;
@@ -197,9 +233,11 @@
     particles = particles.filter((p) => p.life > 0);
 
     if (shakeTime > 0) shakeTime--;
+    if (levelFlashTime > 0) levelFlashTime--;
 
     scoreEl.textContent = "Puntos: " + score;
-    speedEl.textContent = "Velocidad: " + (speed / 4.2).toFixed(1) + "x";
+    levelEl.textContent = "Nivel: " + (levelIndex + 1);
+    speedEl.textContent = "Velocidad: " + (speed / LEVELS[0].speed).toFixed(1) + "x";
   }
 
   function triggerGameOver() {
@@ -335,6 +373,19 @@
     }
 
     drawParticles();
+
+    if (levelFlashTime > 0 && !gameOver) {
+      const alpha = Math.min(levelFlashTime / 30, 1);
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = "#ffd23f";
+      ctx.textAlign = "center";
+      ctx.font = "bold 36px 'Segoe UI', Arial, sans-serif";
+      ctx.shadowColor = "rgba(0,0,0,0.6)";
+      ctx.shadowBlur = 6;
+      ctx.fillText("¡Nivel " + (levelIndex + 1) + "!", W / 2, H / 2 - 200);
+      ctx.shadowBlur = 0;
+      ctx.globalAlpha = 1;
+    }
 
     ctx.restore();
   }
