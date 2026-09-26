@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Escape del Garaje</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="game-container">
+    <div id="hud">
+      <div id="timer">⏱ 00:00</div>
+      <div id="best">Mejor: --:--</div>
+      <button id="hintBtn" type="button">💡 Pista</button>
+    </div>
+
+    <div id="room" class="dark">
+      <div class="wall"></div>
+      <div class="floor"></div>
+      <div id="graffiti">T U R B O</div>
+
+      <button class="hotspot" data-id="poster" style="left:18px;top:60px;width:110px;height:130px">
+        <span class="poster">🏁<br><small>GRAN PREMIO</small><br>🥇#4 🥈#1 🥉#8</span>
+      </button>
+      <button class="hotspot" data-id="calendar" style="left:140px;top:70px;width:60px;height:70px">
+        <span class="calendar">📅</span>
+      </button>
+      <button class="hotspot" data-id="door" style="left:210px;top:50px;width:170px;height:250px">
+        <span class="door"></span>
+      </button>
+      <button class="hotspot" data-id="fusebox" style="left:396px;top:70px;width:66px;height:90px">
+        <span class="fusebox">⚡</span>
+      </button>
+      <button class="hotspot" data-id="vent" style="left:30px;top:230px;width:90px;height:60px">
+        <span class="vent"></span>
+      </button>
+      <button class="hotspot" data-id="desk" style="left:356px;top:240px;width:110px;height:120px">
+        <span class="desk"><span id="monitor">🖥️</span><span class="drawer">🗄️</span></span>
+      </button>
+      <button class="hotspot" data-id="toolbox" style="left:20px;top:360px;width:90px;height:70px">
+        <span class="big">🧰</span>
+      </button>
+      <button class="hotspot" data-id="car" style="left:130px;top:340px;width:220px;height:140px">
+        <span class="car">🏎️</span>
+      </button>
+      <button class="hotspot" data-id="trash" style="left:390px;top:400px;width:60px;height:70px">
+        <span class="big">🗑️</span>
+      </button>
+    </div>
+
+    <div id="message">Estás encerrado en el garaje de Speed Car. Está oscuro… ¡encuentra la forma de salir!</div>
+
+    <div id="inventory">
+      <div class="inv-label">Inventario</div>
+      <div id="inv-slots"></div>
+    </div>
+
+    <div id="modal" class="overlay hidden">
+      <div class="modal-box">
+        <div id="modal-content"></div>
+        <button id="modalClose" type="button" class="secondary">Cerrar</button>
+      </div>
+    </div>
+
+    <div id="start-screen" class="overlay">
+      <h1>🔐 Escape del Garaje</h1>
+      <p>Te has quedado encerrado en el taller de Speed Car.<br>Resuelve los acertijos y escapa lo más rápido posible.</p>
+      <p class="controls">
+        Toca los objetos para examinarlos.<br>
+        Selecciona un objeto del inventario y luego toca dónde quieres usarlo.
+      </p>
+      <button id="startBtn" type="button">Empezar</button>
+      <a class="back" href="../index.html">← Volver a Speed Car</a>
+    </div>
+
+    <div id="win-screen" class="overlay hidden">
+      <h1>🚗💨 ¡Escapaste!</h1>
+      <p id="finalTime">Tiempo: 00:00</p>
+      <p id="hintsUsed"></p>
+      <p id="newBestMsg" class="hidden">¡Nuevo récord!</p>
+      <button id="restartBtn" type="button">Jugar otra vez</button>
+      <a class="back" href="../index.html">← Volver a Speed Car</a>
+    </div>
+  </div>
+
+  <script src="escape.js"></script>
+</body>
+</html>
